@@ -26,7 +26,9 @@ class SettingController extends Controller
             'org_structure_image' => null,
             'org_structure_text' => 'Struktur organisasi BKPSDM Kabupaten Sorong Selatan dirancang untuk efisiensi dan koordinasi yang optimal dalam menjalankan tugas dan fungsi kepegawaian.',
             'tugas_fungsi' => '[]',
-            'profile_image' => null, // Menambahkan setting baru untuk gambar profil
+            'profile_image' => null,
+            'global_background_image' => null,
+            'hero_background_images' => '[]',
         ], $settings);
         
         // Mengonversi JSON menjadi teks multi-baris untuk tampilan di formulir
@@ -49,14 +51,65 @@ class SettingController extends Controller
             'org_structure_text' => 'required',
             'tugas_fungsi' => 'required',
             'org_structure_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi untuk gambar profil baru
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'global_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'remove_hero_images' => 'nullable|array',
+            'hero_background_images' => 'nullable|array|max:5',
+            'hero_background_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
-        $data = $request->except(['_token', '_method', 'org_structure_image', 'remove_org_structure_image', 'profile_image', 'remove_profile_image']);
+        $data = $request->except([
+            '_token', '_method', 
+            'org_structure_image', 'remove_org_structure_image', 
+            'profile_image', 'remove_profile_image',
+            'global_background_image', 'remove_global_background_image',
+            'hero_background_images', 'remove_hero_images'
+        ]);
 
         // Mengonversi teks multi-baris menjadi JSON array sebelum disimpan
         $data['misi'] = json_encode(explode("\n", $request->input('misi')));
         $data['tugas_fungsi'] = json_encode(explode("\n", $request->input('tugas_fungsi')));
+
+        // Handle file upload for hero images
+        $existingImages = json_decode(Setting::where('name', 'hero_background_images')->first()->value ?? '[]', true);
+        $removedImages = $request->input('remove_hero_images', []);
+        
+        $currentImages = array_filter($existingImages, function($image) use ($removedImages) {
+            if (in_array($image, $removedImages)) {
+                Storage::disk('public')->delete($image);
+                return false;
+            }
+            return true;
+        });
+
+        if ($request->hasFile('hero_background_images')) {
+            foreach ($request->file('hero_background_images') as $file) {
+                if ($file->isValid()) {
+                    $path = $file->store('hero_backgrounds', 'public');
+                    $currentImages[] = $path;
+                }
+            }
+        }
+        $data['hero_background_images'] = json_encode(array_values($currentImages));
+
+        // Handle file upload for global background image
+        if ($request->hasFile('global_background_image')) {
+            $existingImage = Setting::where('name', 'global_background_image')->first();
+            if ($existingImage && $existingImage->value) {
+                Storage::disk('public')->delete($existingImage->value);
+            }
+            $path = $request->file('global_background_image')->store('global_backgrounds', 'public');
+            $data['global_background_image'] = $path;
+        } else {
+            if ($request->input('remove_global_background_image')) {
+                $existingImage = Setting::where('name', 'global_background_image')->first();
+                if ($existingImage && $existingImage->value) {
+                    Storage::disk('public')->delete($existingImage->value);
+                    $existingImage->delete();
+                }
+                unset($data['global_background_image']);
+            }
+        }
 
         // Handle file upload for org structure image
         if ($request->hasFile('org_structure_image')) {

@@ -71,4 +71,11 @@
             </button>
         </form>
     </div>
+
+    {{-- Script TinyMCE --}}
+    {{-- Perbaikan: Menggunakan skrip TinyMCE versi 4.0 yang tidak memerlukan kunci API atau validasi domain --}}
+    <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('content');
+    </script>
 @endsection
