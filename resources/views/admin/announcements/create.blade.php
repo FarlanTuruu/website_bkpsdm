@@ -30,13 +30,13 @@
                 @enderror
             </div>
 
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <label for="pdf" class="block text-gray-700 font-medium mb-2">Dokumen PDF (Opsional)</label>
                 <input type="file" name="pdf" id="pdf" class="w-full border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200">
                 @error('pdf')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
-            </div>
+            </div> -->
 
             <div class="mb-4">
                 <label for="content" class="block text-gray-700 font-medium mb-2">Konten</label>
@@ -74,7 +74,7 @@
 
     {{-- Script TinyMCE --}}
     {{-- Perbaikan: Menggunakan skrip TinyMCE versi 4.0 yang tidak memerlukan kunci API atau validasi domain --}}
-    <script src="https://cdn.ckeditor.com/4.23.2/standard/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('content');
     </script>

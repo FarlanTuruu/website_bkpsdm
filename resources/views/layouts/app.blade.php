@@ -400,7 +400,7 @@
             <div class="flex justify-between items-center py-4">
                 <a href="{{ route('homepage') }}" class="logo-container flex items-center space-x-4">
                     {{-- Perbaikan: Ganti logo teks dengan gambar --}}
-                    <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12">
+                    <!-- <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12"> -->
                     <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12">
                     <div class="hidden md:block">
                         <h1 class="text-xl font-bold text-gray-900">BKPSDM</h1>
@@ -465,7 +465,7 @@
                 <div class="footer-section">
                     <div class="flex items-center space-x-4 mb-4">
                         {{-- Perbaikan: Ganti logo teks di footer dengan gambar --}}
-                        <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12">
+                        <!-- <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12"> -->
                         <img src="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}" alt="Logo BKPSDM" class="w-12 h-12">
                         <div>
                             <h3 class="text-xl font-bold text-white">BKPSDM</h3>

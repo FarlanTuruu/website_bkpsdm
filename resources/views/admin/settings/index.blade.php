@@ -107,7 +107,7 @@
                 </div>
 
                 <!-- Global Background Image -->
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <!-- <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
                     <label for="global_background_image" class="block text-gray-700 font-semibold mb-4 flex items-center space-x-2">
                         <i class="fas fa-globe text-blue-600"></i>
                         <span>Gambar Latar Belakang Global</span>
@@ -148,7 +148,7 @@
                             </label>
                         </div>
                     @endif
-                </div>
+                </div> -->
             </div>
 
             <!-- Informasi Kontak Section -->
