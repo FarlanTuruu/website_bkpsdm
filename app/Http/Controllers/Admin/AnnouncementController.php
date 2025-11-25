@@ -7,6 +7,8 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 // Kontroler untuk mengelola Pengumuman (CRUD)
 class AnnouncementController extends Controller
@@ -26,26 +28,49 @@ class AnnouncementController extends Controller
 
     // Menyimpan pengumuman baru ke database
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'publish_date' => 'required|date',
-            'status' => 'required|in:draft,published',
-        ]);
+{
+    // Validasi awal
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'status' => 'required|in:draft,published',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'publish_date' => 'nullable|string',
+    ]);
 
-        $data = $request->all();
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/announcements');
-            $data['image'] = str_replace('public/', '', $path);
+    // Jika tanggal diisi, lakukan validasi manual
+    if ($request->filled('publish_date')) {
+        try {
+            $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
+        } catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
+            ]);
         }
 
-        Announcement::create($data);
+        $today = Carbon::today();
+        $maxDate = $today->copy()->addYear();
 
-        return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil ditambahkan.');
+        if ($date->lessThan($today)) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
+            ]);
+        }
+
+        if ($date->greaterThan($maxDate)) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
+            ]);
+        }
+
+        // Simpan tanggal dalam format database (Y-m-d)
+        $validated['publish_date'] = $date->format('Y-m-d');
     }
+
+    Announcement::create($validated);
+
+    return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil ditambahkan.');
+}
 
     // Menampilkan halaman detail pengumuman (admin)
     // Metode ini ditambahkan untuk mengatasi error
@@ -63,31 +88,65 @@ class AnnouncementController extends Controller
     }
 
     // Memperbarui pengumuman di database
-    public function update(Request $request, Announcement $announcement)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'publish_date' => 'required|date',
-            'status' => 'required|in:draft,published',
-        ]);
-        
-        $data = $request->all();
-        
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($announcement->image) {
-                Storage::delete('public/' . $announcement->image);
-            }
-            $path = $request->file('image')->store('public/announcements');
-            $data['image'] = str_replace('public/', '', $path);
+    // Memperbarui pengumuman di database
+public function update(Request $request, Announcement $announcement)
+{
+    // Validasi awal
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'status' => 'required|in:draft,published',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'publish_date' => 'nullable|string',
+    ]);
+
+    // Jika tanggal diisi, lakukan validasi format dan batasan waktu
+    if ($request->filled('publish_date')) {
+        try {
+            // Konversi dari format D-M-Y ke Carbon
+            $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
+        } catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
+            ]);
         }
 
-        $announcement->update($data);
+        $today = Carbon::today();
+        $maxDate = $today->copy()->addYear();
 
-        return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil diperbarui.');
+        // Validasi batas bawah (tidak boleh masa lalu)
+        if ($date->lessThan($today)) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
+            ]);
+        }
+
+        // Validasi batas atas (tidak boleh lebih dari 1 tahun ke depan)
+        if ($date->greaterThan($maxDate)) {
+            throw ValidationException::withMessages([
+                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
+            ]);
+        }
+
+        // Simpan ke format database (Y-m-d)
+        $validated['publish_date'] = $date->format('Y-m-d');
     }
+
+    // Jika ada gambar baru
+    if ($request->hasFile('image')) {
+        if ($announcement->image) {
+            Storage::delete('public/' . $announcement->image);
+        }
+        $path = $request->file('image')->store('public/announcements');
+        $validated['image'] = str_replace('public/', '', $path);
+    }
+
+    // Update data pengumuman
+    $announcement->update($validated);
+
+    return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil diperbarui.');
+}
+
 
     // Menghapus pengumuman dari database
     public function destroy(Announcement $announcement)
