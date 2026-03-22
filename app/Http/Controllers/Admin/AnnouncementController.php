@@ -67,6 +67,12 @@ class AnnouncementController extends Controller
         $validated['publish_date'] = $date->format('Y-m-d');
     }
 
+    // Jika ada gambar yang diunggah, simpan ke storage publik
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('public/announcements');
+        $validated['image'] = str_replace('public/', '', $path);
+    }
+
     Announcement::create($validated);
 
     return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil ditambahkan.');
