@@ -38,6 +38,10 @@ class AnnouncementController extends Controller
         'publish_date' => 'nullable|string',
     ]);
 
+    // File upload tidak boleh langsung masuk ke mass assignment.
+    // Path image akan diisi setelah file dipindahkan ke disk public.
+    unset($validated['image']);
+
     // Jika tanggal diisi, lakukan validasi manual
     if ($request->filled('publish_date')) {
         try {
@@ -105,6 +109,9 @@ public function update(Request $request, Announcement $announcement)
         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'publish_date' => 'nullable|string',
     ]);
+
+    // Hindari menyimpan UploadedFile temporary path ke database.
+    unset($validated['image']);
 
     // Jika tanggal diisi, lakukan validasi format dan batasan waktu
     if ($request->filled('publish_date')) {
