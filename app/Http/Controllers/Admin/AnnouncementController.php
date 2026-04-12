@@ -9,10 +9,56 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
+use App\Models\Setting;
+use App\Services\WhatsAppGatewayService;
 
 // Kontroler untuk mengelola Pengumuman (CRUD)
 class AnnouncementController extends Controller
 {
+    protected function sendAnnouncementWhatsAppNotification(Announcement $announcement): ?string
+    {
+        $service = app(WhatsAppGatewayService::class);
+
+        if (!$service->isConfiguredAndEnabled()) {
+            return null;
+        }
+
+        $targetsSetting = (string) (Setting::where('name', 'whatsapp_default_targets')->value('value') ?? '');
+        $targets = $service->parseTargets($targetsSetting);
+
+        if (empty($targets)) {
+            return 'Notifikasi WhatsApp tidak dikirim karena nomor tujuan default belum diisi.';
+        }
+
+        $publishDate = $announcement->publish_date
+            ? Carbon::parse($announcement->publish_date)->format('d-m-Y')
+            : '-';
+        $preview = Str::limit(trim(strip_tags((string) $announcement->content)), 180);
+
+        $publicUrl = route('pengumuman.show', $announcement->slug);
+        $template = (string) (Setting::where('name', 'whatsapp_announcement_template')->value('value') ?? '');
+
+        if ($template === '') {
+            $template = "*Pengumuman Baru Dipublikasikan*\nJudul: {title}\nPreview: {preview}\nTanggal Terbit: {publish_date}\nLihat detail: {url}\nStatus: {status}";
+        }
+
+        $message = $service->renderTemplate($template, [
+            'title' => $announcement->title,
+            'preview' => $preview,
+            'publish_date' => $publishDate,
+            'url' => $publicUrl,
+            'status' => $announcement->status,
+        ]);
+
+        $result = $service->sendBulk($targets, $message);
+
+        if ($result['ok']) {
+            return null;
+        }
+
+        return $result['message'];
+    }
+
     // Menampilkan daftar pengumuman
     public function index()
     {
@@ -77,9 +123,16 @@ class AnnouncementController extends Controller
         $validated['image'] = str_replace('public/', '', $path);
     }
 
-    Announcement::create($validated);
+    $announcement = Announcement::create($validated);
 
-    return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil ditambahkan.');
+    $warning = null;
+    if (($validated['status'] ?? null) === 'published') {
+        $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
+    }
+
+    return redirect()->route('announcements.index')
+        ->with('success', 'Pengumuman berhasil ditambahkan.')
+        ->with('warning', $warning);
 }
 
     // Menampilkan halaman detail pengumuman (admin)
@@ -154,10 +207,19 @@ public function update(Request $request, Announcement $announcement)
         $validated['image'] = str_replace('public/', '', $path);
     }
 
+    $wasPublished = $announcement->status === 'published';
+
     // Update data pengumuman
     $announcement->update($validated);
 
-    return redirect()->route('announcements.index')->with('success', 'Pengumuman berhasil diperbarui.');
+    $warning = null;
+    if (($validated['status'] ?? null) === 'published' && !$wasPublished) {
+        $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
+    }
+
+    return redirect()->route('announcements.index')
+        ->with('success', 'Pengumuman berhasil diperbarui.')
+        ->with('warning', $warning);
 }
 
 

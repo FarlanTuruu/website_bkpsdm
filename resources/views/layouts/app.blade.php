@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'BKPSDM Kabupaten Sorong Selatan')</title>
+    <meta name="description" content="@yield('meta_description', 'BKPSDM Kabupaten Sorong Selatan: informasi pengumuman, kebijakan, dan layanan kepegawaian.')">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="theme-color" content="#1d4ed8">
+    <!-- Open Graph -->
+    <meta property="og:title" content="@yield('title', 'BKPSDM Kabupaten Sorong Selatan')">
+    <meta property="og:description" content="@yield('meta_description', 'BKPSDM Kabupaten Sorong Selatan: informasi pengumuman, kebijakan, dan layanan kepegawaian.')">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ asset('storage/logos/Logo_kabupaten_sorsel-removebg-preview.png') }}">
     <!-- Memuat Tailwind CSS melalui CDN untuk kemudahan styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome untuk ikon-ikon -->
@@ -11,6 +21,7 @@
     <!-- Menggunakan font Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -391,6 +402,7 @@
     </style>
 </head>
 <body class="text-gray-800 antialiased">
+    <a href="#mainContent" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-blue-600 text-white px-3 py-2 rounded">Lewati ke konten utama</a>
     
     <!-- Header -->
 <header id="pageHeader" class="header-enhanced sticky top-0 z-50 transform -translate-y-full opacity-0 invisible pointer-events-none transition-all duration-500">
@@ -453,7 +465,7 @@
         </nav>
     </div>
     
-    <main class="min-h-screen animate-fade-in-up">
+    <main id="mainContent" class="min-h-screen animate-fade-in-up" role="main" aria-label="Konten utama">
         @yield('content')
     </main>
     

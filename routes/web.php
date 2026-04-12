@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\WhatsAppGatewayController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\PublicAnnouncementController;
 
@@ -35,4 +36,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::resource('leaders', LeaderController::class);
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::get('whatsapp-gateway', [WhatsAppGatewayController::class, 'index'])->name('whatsapp.index');
+    Route::put('whatsapp-gateway', [WhatsAppGatewayController::class, 'update'])->name('whatsapp.update');
+    Route::post('whatsapp-gateway/test', [WhatsAppGatewayController::class, 'test'])->name('whatsapp.test');
 });

@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-xl p-8 mb-8 text-white relative overflow-hidden">
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-xl p-5 sm:p-8 mb-6 sm:mb-8 text-white relative overflow-hidden">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-4 left-4 w-16 h-16 bg-white rounded-full animate-pulse"></div>
@@ -12,13 +12,13 @@
             <div class="absolute bottom-4 left-1/3 w-12 h-12 bg-indigo-300 rounded-full animate-ping"></div>
         </div>
         
-        <div class="relative flex items-center space-x-4">
-            <div class="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                <i class="fas fa-cogs text-3xl"></i>
+        <div class="relative flex items-start sm:items-center gap-3 sm:gap-4">
+            <div class="bg-white/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl">
+                <i class="fas fa-cogs text-2xl sm:text-3xl"></i>
             </div>
             <div>
-                <h3 class="text-3xl font-bold mb-2">Manajemen Pengaturan</h3>
-                <p class="text-blue-100">Kelola semua pengaturan website BKPSDM dengan mudah dan efisien</p>
+                <h3 class="text-2xl sm:text-3xl font-bold mb-2">Manajemen Pengaturan</h3>
+                <p class="text-blue-100 text-sm sm:text-base">Kelola semua pengaturan website BKPSDM dengan mudah dan efisien</p>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
     <!-- Main Form Container -->
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
         <!-- Form Header -->
-        <div class="bg-gray-50 border-b border-gray-200 px-8 py-6">
+        <div class="bg-gray-50 border-b border-gray-200 px-4 sm:px-8 py-5 sm:py-6">
             <div class="flex items-center space-x-3">
                 <div class="bg-blue-600 p-2 rounded-lg">
                     <i class="fas fa-edit text-white"></i>
@@ -35,20 +35,20 @@
             </div>
         </div>
 
-        <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="p-8">
+        <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="p-4 sm:p-8">
             @csrf
             @method('PUT')
             
             <!-- Background Halaman Section -->
-            <div class="mb-12">
+            <div class="mb-10 sm:mb-12">
                 <!-- Section Header -->
-                <div class="flex items-center space-x-3 mb-6 pb-4 border-b-2 border-blue-100">
+                <div class="flex items-start sm:items-center space-x-3 mb-6 pb-4 border-b-2 border-blue-100">
                     <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl text-white">
                         <i class="fas fa-image text-lg"></i>
                     </div>
                     <div>
-                        <h4 class="text-2xl font-bold text-gray-800">Background Halaman</h4>
-                        <p class="text-gray-600">Atur gambar latar belakang untuk website</p>
+                        <h4 class="text-xl sm:text-2xl font-bold text-gray-800">Background Halaman</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Atur gambar latar belakang untuk website</p>
                     </div>
                 </div>
 
@@ -152,14 +152,14 @@
             </div>
 
             <!-- Informasi Kontak Section -->
-            <div class="mb-12">
+            <div class="mb-10 sm:mb-12">
                 <div class="flex items-center space-x-3 mb-6 pb-4 border-b-2 border-green-100">
                     <div class="bg-gradient-to-r from-green-500 to-teal-500 p-3 rounded-xl text-white">
                         <i class="fas fa-address-book text-lg"></i>
                     </div>
                     <div>
-                        <h4 class="text-2xl font-bold text-gray-800">Informasi Kontak</h4>
-                        <p class="text-gray-600">Kelola informasi kontak organisasi</p>
+                        <h4 class="text-xl sm:text-2xl font-bold text-gray-800">Informasi Kontak</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Kelola informasi kontak organisasi</p>
                     </div>
                 </div>
 
@@ -203,14 +203,14 @@
             </div>
             
             <!-- Profil BKPSDM Section -->
-            <div class="mb-12">
+            <div class="mb-10 sm:mb-12">
                 <div class="flex items-center space-x-3 mb-6 pb-4 border-b-2 border-orange-100">
                     <div class="bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-xl text-white">
                         <i class="fas fa-building text-lg"></i>
                     </div>
                     <div>
-                        <h4 class="text-2xl font-bold text-gray-800">Profil BKPSDM</h4>
-                        <p class="text-gray-600">Kelola informasi profil organisasi</p>
+                        <h4 class="text-xl sm:text-2xl font-bold text-gray-800">Profil BKPSDM</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Kelola informasi profil organisasi</p>
                     </div>
                 </div>
 
@@ -354,7 +354,7 @@
             
             <!-- Submit Button -->
             <div class="flex justify-end">
-                <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:from-blue-700 hover:to-indigo-700 hover:scale-105 transition-all duration-300 flex items-center space-x-3">
+                <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:from-blue-700 hover:to-indigo-700 hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3">
                     <i class="fas fa-save text-lg"></i>
                     <span>Perbarui Pengaturan</span>
                 </button>

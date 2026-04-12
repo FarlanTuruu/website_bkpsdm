@@ -3,11 +3,11 @@
 @section('page-title', 'Tambah Pengumuman')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-lg p-6">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-semibold text-gray-800">Tambah Pengumuman Baru</h3>
+<div class="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Tambah Pengumuman Baru</h3>
         <a href="{{ route('announcements.index') }}" 
-           class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200">
+           class="inline-flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200 w-full sm:w-auto">
             <i class="fas fa-arrow-left mr-2"></i> Kembali
         </a>
     </div>
@@ -100,7 +100,7 @@
         </div>
 
         <button type="submit" 
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
             <i class="fas fa-save mr-2"></i> Simpan Pengumuman
         </button>
     </form>

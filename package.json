@@ -26,6 +26,7 @@
         "call-bind-apply-helpers": "^1.0.2",
         "chokidar": "^4.0.3",
         "combined-stream": "^1.0.8",
+        "cypress": "^15.7.0",
         "delayed-stream": "^1.0.0",
         "detect-libc": "^1.0.3",
         "dunder-proto": "^1.0.1",

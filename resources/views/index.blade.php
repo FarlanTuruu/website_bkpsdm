@@ -4,16 +4,16 @@
 
 @section('content')
     <!-- Hero Section with Full Background -->
-    <section class="relative text-white pt-0 pb-20 px-4 md:px-0 overflow-hidden min-h-screen flex items-center" style="margin-top: -8rem;">
+    <section class="relative text-white pt-0 pb-20 px-4 md:px-0 overflow-hidden min-h-screen flex items-center" aria-label="Bagian hero beranda" style="margin-top: -8rem;">
         {{-- Area Gambar Dinamis dari Database - Full Background --}}
         {{-- Area Slideshow Gambar --}}
-        <div id="hero-slideshow" class="absolute inset-0 z-0">
+        <div id="hero-slideshow" class="absolute inset-0 z-0" aria-hidden="true">
             @php
                 $heroImages = $settings['hero_background_images'] ?? [];
             @endphp
             @forelse($heroImages as $index => $image)
                 <div class="absolute inset-0 bg-no-repeat bg-center transition-opacity duration-1000 ease-in-out"
-                    style="background-image: url('{{ asset('storage/' . $image) }}'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: {{ $index == 0 ? 1 : 0 }};">
+                    style="background-image: url('{{ asset('storage/' . $image) }}'); background-size: cover; background-repeat: no-repeat; background-position: center; opacity: {{ $index == 0 ? 1 : 0 }};" role="img" aria-label="Gambar latar hero {{ $index + 1 }}">
                 </div>
 
 
@@ -23,7 +23,7 @@
         </div>
 
         {{-- Animated Background Elements untuk efek visual --}}
-        <div class="fixed inset-0 z-20 opacity-20 pointer-events-none">
+        <div class="fixed inset-0 z-20 opacity-20 pointer-events-none" aria-hidden="true">
             <div class="absolute top-20 left-20 w-32 h-32 bg-white rounded-full animate-pulse"></div>
             <div class="absolute top-40 right-20 w-20 h-20 bg-blue-300 rounded-full animate-bounce" style="animation-delay: 1s;"></div>
             <div class="absolute bottom-40 left-1/4 w-16 h-16 bg-indigo-300 rounded-full animate-ping" style="animation-delay: 2s;"></div>
@@ -32,7 +32,7 @@
         </div>
 
         {{-- Overlay tambahan untuk kontras teks yang lebih baik --}}
-        <div class="absolute inset-0 bg-black/30 z-30"></div>
+        <div class="absolute inset-0 bg-black/30 z-30" aria-hidden="true"></div>
 
         {{-- Konten Teks Hero Section --}}
         <div class="relative container mx-auto z-40 flex flex-col md:flex-row items-center justify-between" style="padding-top: 8rem;">
@@ -73,14 +73,14 @@
     </section>
 
     <!-- Announcements Section dengan background transparan -->
-    <section class="py-16 relative z-10 bg-white/95 backdrop-blur-sm">
+    <section class="py-16 relative z-10 bg-white/95 backdrop-blur-sm" aria-labelledby="pengumuman-heading">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <div class="inline-flex items-center space-x-2 bg-yellow-100 text-yellow-800 text-sm font-medium px-6 py-2 rounded-full mb-4">
                     <i class="fas fa-newspaper"></i>
                     <span>Terbaru</span>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-4 text-gray-900">Pengumuman & Berita</h2>
+                <h2 id="pengumuman-heading" class="text-3xl md:text-4xl font-bold mt-4 mb-4 text-gray-900">Pengumuman & Berita</h2>
                 <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full mb-4"></div>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">Dapatkan informasi terkini seputar kebijakan, pengumuman, dan kegiatan kepegawaian.</p>
             </div>
@@ -89,7 +89,7 @@
                 @forelse($announcements as $announcement)
                     <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-200/50">
                         <div class="relative">
-                            <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-48 object-cover">
+                            <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
                             <div class="absolute top-4 left-4 flex space-x-2">
                                 <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
                                     {{ $announcement->status === 'published' ? 'Terbit' : 'Draf' }}
@@ -136,7 +136,7 @@
             </div>
 
             <div class="text-center mt-12">
-                <a href="{{ route('pengumuman.index') }}" class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-8 rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 hover:scale-105 transition-all duration-300">
+                <a href="{{ route('pengumuman.index') }}" class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-8 rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 hover:scale-105 transition-all duration-300" aria-label="Lihat semua pengumuman">
                     <i class="fas fa-list-ul"></i>
                     <span>Lihat Semua Pengumuman</span>
                 </a>
@@ -147,7 +147,7 @@
     </section>
     <!-- Back to Top Button -->
             <div class="fixed bottom-8 right-8 z-50">
-                <button onclick="scrollToTop()" class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-300">
+                <button onclick="scrollToTop()" class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-300" aria-label="Kembali ke atas">
                     <i class="fas fa-chevron-up text-lg"></i>
                 </button>
             </div>
@@ -156,24 +156,32 @@
         // JavaScript untuk slideshow gambar latar belakang
         document.addEventListener('DOMContentLoaded', function() {
             const slides = document.querySelectorAll('#hero-slideshow > div');
-            if (slides.length > 1) {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!prefersReducedMotion && slides.length > 1) {
                 let currentSlide = 0;
                 setInterval(() => {
                     slides[currentSlide].style.opacity = '0';
                     currentSlide = (currentSlide + 1) % slides.length;
                     slides[currentSlide].style.opacity = '1';
-                }, 5000); // Ganti gambar setiap 5 detik
+                }, 5000);
+            } else if (slides.length > 0) {
+                slides.forEach((s, i) => s.style.opacity = i === 0 ? '1' : '0');
             }
         });
 
         // Parallax effect untuk background
-        window.addEventListener('scroll', function() {
-            const scrolled = window.pageYOffset;
-            const background = document.querySelector('.fixed.inset-0');
-            if (background) {
-                background.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+        (function(){
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!prefersReducedMotion) {
+                window.addEventListener('scroll', function() {
+                    const scrolled = window.pageYOffset;
+                    const background = document.querySelector('.fixed.inset-0');
+                    if (background) {
+                        background.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+                    }
+                });
             }
-        });
+        })();
 
         // Scroll to top functionality
         function scrollToTop() {
@@ -186,13 +194,10 @@
         // Show/hide back to top button based on scroll
         window.addEventListener('scroll', function() {
             const backToTopBtn = document.querySelector('.fixed.bottom-8.right-8');
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.remove('opacity-0');
-                backToTopBtn.classList.add('opacity-100');
-            } else {
-                backToTopBtn.classList.add('opacity-0');
-                backToTopBtn.classList.remove('opacity-100');
-            }
+            if (!backToTopBtn) return;
+            const show = window.pageYOffset > 300;
+            backToTopBtn.classList.toggle('opacity-0', !show);
+            backToTopBtn.classList.toggle('opacity-100', show);
         });
 
         // Add animation on scroll
@@ -200,6 +205,13 @@
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
+
+        // Non-functional enhancement: avoid heavy work on main thread
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                // Placeholder for any idle tasks (e.g., prefetch)
+            });
+        }
 
         
     </script>

@@ -15,13 +15,25 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex h-screen">
+<body class="bg-gray-100 min-h-screen">
+    <div class="md:hidden fixed top-0 inset-x-0 z-40 bg-gray-900 text-white px-4 py-3 flex items-center justify-between shadow-lg">
+        <h1 class="text-base font-semibold">CMS BKPSDM</h1>
+        <button id="openSidebarBtn" type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md bg-gray-800 hover:bg-gray-700 transition duration-200" aria-label="Buka menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white shadow-lg flex flex-col justify-between">
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <aside id="adminSidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 text-white shadow-lg flex flex-col justify-between transform -translate-x-full transition-transform duration-300 md:translate-x-0">
         <div class="p-6">
-            <h1 class="text-2xl font-bold mb-8">CMS BKPSDM</h1>
-            <nav class="space-y-4">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold">CMS BKPSDM</h1>
+                <button id="closeSidebarBtn" type="button" class="md:hidden inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 transition duration-200" aria-label="Tutup menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="space-y-2">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2 p-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
                     <i class="fas fa-tachometer-alt w-5"></i>
                     <span>Dashboard</span>
@@ -38,6 +50,10 @@
                     <i class="fas fa-cogs w-5"></i>
                     <span>Pengaturan</span>
                 </a>
+                <a href="{{ route('whatsapp.index') }}" class="flex items-center space-x-2 p-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                    <i class="fab fa-whatsapp w-5"></i>
+                    <span>WhatsApp Gateway</span>
+                </a>
             </nav>
         </div>
         <div class="p-6">
@@ -51,9 +67,8 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <div class="flex-1 overflow-y-auto">
-        <header class="bg-white shadow-md p-6 flex justify-between items-center sticky top-0 z-10">
+    <div class="min-h-screen md:ml-64">
+        <header class="hidden md:flex bg-white shadow-md px-6 py-4 justify-between items-center sticky top-0 z-30">
             <h2 class="text-2xl font-semibold text-gray-800">
                 @yield('page-title', 'Dashboard')
             </h2>
@@ -63,10 +78,19 @@
             </div>
         </header>
 
-        <main class="p-6">
+        <main class="pt-20 md:pt-6 px-4 pb-6 md:px-6">
+            <h2 class="md:hidden text-xl font-semibold text-gray-800 mb-4">
+                @yield('page-title', 'Dashboard')
+            </h2>
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if (session('warning'))
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('warning') }}</span>
                 </div>
             @endif
 
@@ -85,6 +109,49 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const openBtn = document.getElementById('openSidebarBtn');
+            const closeBtn = document.getElementById('closeSidebarBtn');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            if (openBtn) {
+                openBtn.addEventListener('click', openSidebar);
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) {
+                    overlay.classList.add('hidden');
+                    sidebar.classList.remove('-translate-x-full');
+                    document.body.classList.remove('overflow-hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
