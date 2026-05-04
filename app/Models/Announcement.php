@@ -13,6 +13,7 @@ class Announcement extends Model
         'slug',
         'content',
         'image',
+        'attachment',
         'publish_date',
         'status'
     ];

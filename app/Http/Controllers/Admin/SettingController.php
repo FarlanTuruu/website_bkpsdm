@@ -20,11 +20,20 @@ class SettingController extends Controller
             'address' => 'Keyen, Kec. Teminabuan, Kabupaten Sorong Selatan, Papua Bar. 98454',
             'phone' => '081247451478',
             'email' => 'bkpsdm.sorsel24@gmail.com',
-            'profile_bkpsdm' => 'Badan Kepegawaian dan Pengembangan Sumber Daya Manusia (BKPSDM) Kabupaten Sorong Selatan dibentuk berdasarkan Peraturan Daerah Kabupaten Sorong Selatan Nomor 8 Tahun 2016 tentang Pembentukan dan Susunan Perangkat Daerah Kabupaten Sorong Selatan. Sebelumya, urusan kepegawaian di Kabupaten Sorong Selatan ditangani oleh Badan Kepegawaian Daerah (BKD) yang kemudian berkembang menjadi BKPSDM untuk mengakomodasi kebutuhan pengembangan sumber daya manusia yang semakin kompleks. Transformasi ini sejalan dengan dinamika reformasi birokrasi dan tuntutan pelayanan publik yang semakin berkualitas, dimana pengelolaan SDM aparatur menjadi kunci utama keberhasilan pembangunan daerah.',
-            'visi' => 'Terwujudnya Aparatur Sipil Negara yang Profesional, Berintegritas, dan Melayani untuk Makassar yang Maju, Sejahtera, dan Bermartabat',
+            'profile_bkpsdm' => 'Badan Kepegawaian dan Pengembangan Sumber Daya Manusia (BKPSDM) Kabupaten
+             Sorong Selatan dibentuk berdasarkan Peraturan Daerah Kabupaten Sorong Selatan Nomor 8 Tahun 2016 
+             tentang Pembentukan dan Susunan Perangkat Daerah Kabupaten Sorong Selatan. Sebelumya, urusan 
+             kepegawaian di Kabupaten Sorong Selatan ditangani oleh Badan Kepegawaian Daerah (BKD) yang 
+             kemudian berkembang menjadi BKPSDM untuk mengakomodasi kebutuhan pengembangan sumber daya 
+             manusia yang semakin kompleks. Transformasi ini sejalan dengan dinamika reformasi birokrasi dan 
+             tuntutan pelayanan publik yang semakin berkualitas, dimana pengelolaan SDM aparatur menjadi kunci 
+             utama keberhasilan pembangunan daerah.',
+            'visi' => 'Terwujudnya Aparatur Sipil Negara yang Profesional, Berintegritas, dan Melayani untuk 
+            Makassar yang Maju, Sejahtera, dan Bermartabat',
             'misi' => '[]',
             'org_structure_image' => null,
-            'org_structure_text' => 'Struktur organisasi BKPSDM Kabupaten Sorong Selatan dirancang untuk efisiensi dan koordinasi yang optimal dalam menjalankan tugas dan fungsi kepegawaian.',
+            'org_structure_text' => 'Struktur organisasi BKPSDM Kabupaten Sorong Selatan dirancang 
+            untuk efisiensi dan koordinasi yang optimal dalam menjalankan tugas dan fungsi kepegawaian.',
             'tugas_fungsi' => '[]',
             'profile_image' => null,
             'global_background_image' => null,

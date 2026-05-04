@@ -64,9 +64,20 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($announcements as $announcement)
                     <article class="group bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-200">
-                        <!-- Image Container -->
+                        <!-- Image / Attachment Container -->
                         <div class="relative overflow-hidden">
-                            <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                            @if($announcement->image)
+                                <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                            @elseif($announcement->attachment)
+                                <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                                    <a href="{{ route('pengumuman.show', $announcement->slug) }}" class="flex flex-col items-center text-gray-600">
+                                        <i class="fas fa-file-pdf text-4xl text-red-600"></i>
+                                        <span class="mt-2 text-sm">Lihat Lampiran</span>
+                                    </a>
+                                </div>
+                            @else
+                                <div class="w-full h-48 bg-gray-100"></div>
+                            @endif
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
                             
                             <!-- Status Badges -->

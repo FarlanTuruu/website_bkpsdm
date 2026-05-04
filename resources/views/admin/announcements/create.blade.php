@@ -41,6 +41,19 @@
         </div>
 
         {{-- ===============================
+            FIELD: ATTACHMENT (PDF)
+        ================================ --}}
+        <div class="mb-4">
+            <label for="attachment" class="block text-gray-700 font-medium mb-2">Lampiran (PDF)</label>
+            <input type="file" name="attachment" id="attachment" accept="application/pdf"
+                   class="w-full border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200">
+            <p class="text-gray-500 text-xs mt-1">Upload file PDF jika ingin menyertakan lampiran.</p>
+            @error('attachment')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- ===============================
             FIELD: KONTEN
         ================================ --}}
         <div class="mb-4">

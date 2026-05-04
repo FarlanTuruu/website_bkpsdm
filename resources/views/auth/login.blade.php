@@ -33,7 +33,7 @@
                 @enderror
             </div>
 
-            <div class="flex items-center justify-between mb-6">
+            <!-- <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center">
                     <input class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                     <label class="ml-2 block text-sm text-gray-900" for="remember">
@@ -45,7 +45,7 @@
                         Lupa Kata Sandi Anda?
                     </a>
                 @endif
-            </div>
+            </div> -->
 
             <div class="mb-6">
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg">
@@ -54,11 +54,11 @@
             </div>
         </form>
 
-        @if (Route::has('register'))
+        <!-- @if (Route::has('register'))
             <p class="text-center text-sm text-gray-600">
                 Belum punya akun? <a class="text-blue-600 hover:text-blue-700 font-medium" href="{{ route('register') }}">Daftar sekarang</a>
             </p>
-        @endif
+        @endif -->
     </div>
 </div>
 @endsection

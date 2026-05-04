@@ -74,66 +74,74 @@ class AnnouncementController extends Controller
 
     // Menyimpan pengumuman baru ke database
     public function store(Request $request)
-{
-    // Validasi awal
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'status' => 'required|in:draft,published',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'publish_date' => 'nullable|string',
-    ]);
+    {
+        // Validasi awal
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'status' => 'required|in:draft,published',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'attachment' => 'nullable|mimes:pdf|max:10240',
+            'publish_date' => 'nullable|string',
+        ]);
 
-    // File upload tidak boleh langsung masuk ke mass assignment.
-    // Path image akan diisi setelah file dipindahkan ke disk public.
-    unset($validated['image']);
+        // File uploads (image/attachment) tidak boleh langsung masuk ke mass assignment.
+        // Path akan diisi setelah file dipindahkan ke disk public.
+        unset($validated['image']);
+        unset($validated['attachment']);
 
-    // Jika tanggal diisi, lakukan validasi manual
-    if ($request->filled('publish_date')) {
-        try {
-            $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
-        } catch (\Exception $e) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
-            ]);
+        // Jika tanggal diisi, lakukan validasi manual
+        if ($request->filled('publish_date')) {
+            try {
+                $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
+            } catch (\Exception $e) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
+                ]);
+            }
+
+            $today = Carbon::today();
+            $maxDate = $today->copy()->addYear();
+
+            if ($date->lessThan($today)) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
+                ]);
+            }
+
+            if ($date->greaterThan($maxDate)) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
+                ]);
+            }
+
+            // Simpan tanggal dalam format database (Y-m-d)
+            $validated['publish_date'] = $date->format('Y-m-d');
         }
 
-        $today = Carbon::today();
-        $maxDate = $today->copy()->addYear();
-
-        if ($date->lessThan($today)) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
-            ]);
+        // Jika ada gambar yang diunggah, simpan ke storage publik
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('public/announcements');
+            $validated['image'] = str_replace('public/', '', $path);
         }
 
-        if ($date->greaterThan($maxDate)) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
-            ]);
+        // Jika ada file PDF yang diunggah, simpan ke storage publik
+        if ($request->hasFile('attachment')) {
+            $path = $request->file('attachment')->store('public/announcements');
+            $validated['attachment'] = str_replace('public/', '', $path);
         }
 
-        // Simpan tanggal dalam format database (Y-m-d)
-        $validated['publish_date'] = $date->format('Y-m-d');
+        $announcement = Announcement::create($validated);
+
+        $warning = null;
+        if (($validated['status'] ?? null) === 'published') {
+            $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
+        }
+
+        return redirect()->route('announcements.index')
+            ->with('success', 'Pengumuman berhasil ditambahkan.')
+            ->with('warning', $warning);
     }
-
-    // Jika ada gambar yang diunggah, simpan ke storage publik
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('public/announcements');
-        $validated['image'] = str_replace('public/', '', $path);
-    }
-
-    $announcement = Announcement::create($validated);
-
-    $warning = null;
-    if (($validated['status'] ?? null) === 'published') {
-        $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
-    }
-
-    return redirect()->route('announcements.index')
-        ->with('success', 'Pengumuman berhasil ditambahkan.')
-        ->with('warning', $warning);
-}
 
     // Menampilkan halaman detail pengumuman (admin)
     // Metode ini ditambahkan untuk mengatasi error
@@ -152,75 +160,86 @@ class AnnouncementController extends Controller
 
     // Memperbarui pengumuman di database
     // Memperbarui pengumuman di database
-public function update(Request $request, Announcement $announcement)
-{
-    // Validasi awal
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'status' => 'required|in:draft,published',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'publish_date' => 'nullable|string',
-    ]);
+    public function update(Request $request, Announcement $announcement)
+    {
+        // Validasi awal
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'status' => 'required|in:draft,published',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'attachment' => 'nullable|mimes:pdf|max:10240',
+            'publish_date' => 'nullable|string',
+        ]);
 
-    // Hindari menyimpan UploadedFile temporary path ke database.
-    unset($validated['image']);
+        // Hindari menyimpan UploadedFile temporary path ke database.
+        unset($validated['image']);
+        unset($validated['attachment']);
 
-    // Jika tanggal diisi, lakukan validasi format dan batasan waktu
-    if ($request->filled('publish_date')) {
-        try {
-            // Konversi dari format D-M-Y ke Carbon
-            $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
-        } catch (\Exception $e) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
-            ]);
+        // Jika tanggal diisi, lakukan validasi format dan batasan waktu
+        if ($request->filled('publish_date')) {
+            try {
+                // Konversi dari format D-M-Y ke Carbon
+                $date = Carbon::createFromFormat('d-m-Y', $request->publish_date);
+            } catch (\Exception $e) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Format tanggal tidak valid. Gunakan format DD-MM-YYYY.',
+                ]);
+            }
+
+            $today = Carbon::today();
+            $maxDate = $today->copy()->addYear();
+
+            // Validasi batas bawah (tidak boleh masa lalu)
+            if ($date->lessThan($today)) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
+                ]);
+            }
+
+            // Validasi batas atas (tidak boleh lebih dari 1 tahun ke depan)
+            if ($date->greaterThan($maxDate)) {
+                throw ValidationException::withMessages([
+                    'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
+                ]);
+            }
+
+            // Simpan ke format database (Y-m-d)
+            $validated['publish_date'] = $date->format('Y-m-d');
         }
 
-        $today = Carbon::today();
-        $maxDate = $today->copy()->addYear();
-
-        // Validasi batas bawah (tidak boleh masa lalu)
-        if ($date->lessThan($today)) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh di masa lalu.',
-            ]);
+        // Jika ada gambar baru
+        if ($request->hasFile('image')) {
+            if ($announcement->image) {
+                Storage::delete('public/' . $announcement->image);
+            }
+            $path = $request->file('image')->store('public/announcements');
+            $validated['image'] = str_replace('public/', '', $path);
         }
 
-        // Validasi batas atas (tidak boleh lebih dari 1 tahun ke depan)
-        if ($date->greaterThan($maxDate)) {
-            throw ValidationException::withMessages([
-                'publish_date' => 'Tanggal, Bulan, Tahun tidak boleh lebih dari 1 tahun ke depan.',
-            ]);
+        // Jika ada attachment baru (PDF)
+        if ($request->hasFile('attachment')) {
+            if ($announcement->attachment) {
+                Storage::delete('public/' . $announcement->attachment);
+            }
+            $path = $request->file('attachment')->store('public/announcements');
+            $validated['attachment'] = str_replace('public/', '', $path);
         }
 
-        // Simpan ke format database (Y-m-d)
-        $validated['publish_date'] = $date->format('Y-m-d');
+        $wasPublished = $announcement->status === 'published';
+
+        // Update data pengumuman
+        $announcement->update($validated);
+
+        $warning = null;
+        if (($validated['status'] ?? null) === 'published' && !$wasPublished) {
+            $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
+        }
+
+        return redirect()->route('announcements.index')
+            ->with('success', 'Pengumuman berhasil diperbarui.')
+            ->with('warning', $warning);
     }
-
-    // Jika ada gambar baru
-    if ($request->hasFile('image')) {
-        if ($announcement->image) {
-            Storage::delete('public/' . $announcement->image);
-        }
-        $path = $request->file('image')->store('public/announcements');
-        $validated['image'] = str_replace('public/', '', $path);
-    }
-
-    $wasPublished = $announcement->status === 'published';
-
-    // Update data pengumuman
-    $announcement->update($validated);
-
-    $warning = null;
-    if (($validated['status'] ?? null) === 'published' && !$wasPublished) {
-        $warning = $this->sendAnnouncementWhatsAppNotification($announcement);
-    }
-
-    return redirect()->route('announcements.index')
-        ->with('success', 'Pengumuman berhasil diperbarui.')
-        ->with('warning', $warning);
-}
 
 
     // Menghapus pengumuman dari database
@@ -228,6 +247,9 @@ public function update(Request $request, Announcement $announcement)
     {
         if ($announcement->image) {
             Storage::delete('public/' . $announcement->image);
+        }
+        if ($announcement->attachment) {
+            Storage::delete('public/' . $announcement->attachment);
         }
         $announcement->delete();
 

@@ -88,17 +88,25 @@
                         </div>
                     </div>
                     
-                    <!-- Featured Image -->
+                    <!-- Featured Image or Attachment -->
                     <div class="relative p-8 pb-0">
                         <div class="relative group overflow-hidden rounded-2xl shadow-lg">
-                            <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                            <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition duration-300">
-                                <button onclick="openImageModal()" class="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-white/30 transition duration-200 flex items-center space-x-2">
-                                    <i class="fas fa-expand-alt"></i>
-                                    <span>Lihat Gambar</span>
-                                </button>
-                            </div>
+                            @if($announcement->image)
+                                <img src="{{ asset('storage/' . $announcement->image) }}" alt="{{ $announcement->title }}" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition duration-300">
+                                    <button onclick="openImageModal()" class="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-white/30 transition duration-200 flex items-center space-x-2">
+                                        <i class="fas fa-expand-alt"></i>
+                                        <span>Lihat Gambar</span>
+                                    </button>
+                                </div>
+                            @elseif($announcement->attachment)
+                                <div class="w-full h-96 bg-gray-100 flex items-center justify-center p-4">
+                                    <iframe src="{{ asset('storage/' . $announcement->attachment) }}" class="w-full h-full" frameborder="0"></iframe>
+                                </div>
+                            @else
+                                <div class="w-full h-80 bg-gray-100"></div>
+                            @endif
                         </div>
                     </div>
                     
@@ -110,6 +118,19 @@
                                 {!! $announcement->content !!}
                             </div>
                         </div>
+                            @if($announcement->attachment)
+                                <div class="mt-8">
+                                    <h3 class="text-lg font-semibold mb-2">Lampiran</h3>
+                                    <div class="flex items-center space-x-4">
+                                        <a href="{{ asset('storage/' . $announcement->attachment) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                            <i class="fas fa-file-pdf mr-2"></i> Buka Lampiran (PDF)
+                                        </a>
+                                        <a href="{{ asset('storage/' . $announcement->attachment) }}" download class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition">
+                                            <i class="fas fa-download mr-2"></i> Unduh
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         
                         <!-- Article Footer -->
                         <div class="mt-12 pt-8 border-t border-gray-200">

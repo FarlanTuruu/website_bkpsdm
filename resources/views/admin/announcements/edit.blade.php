@@ -52,6 +52,22 @@
             </div>
         </div>
 
+        {{-- Attachment (PDF) --}}
+        <div class="mb-4">
+            <label for="attachment" class="block text-gray-700 font-medium mb-2">Lampiran (PDF)</label>
+            @if($announcement->attachment)
+                <div class="mb-2">
+                    <a href="{{ asset('storage/' . $announcement->attachment) }}" target="_blank" class="text-blue-600 underline">Lihat lampiran saat ini</a>
+                </div>
+            @endif
+            <input type="file" name="attachment" id="attachment" accept="application/pdf"
+                class="w-full border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200">
+            <p class="text-gray-500 text-xs mt-1">Biarkan kosong jika tidak ingin mengubah lampiran.</p>
+            @error('attachment')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         {{-- Konten --}}
         <div class="mb-4">
             <label for="content" class="block text-gray-700 font-medium mb-2">Konten</label>
