@@ -165,13 +165,13 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Website Name -->
-                    <!-- <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
+                    <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
                         <label for="website_name" class="block text-gray-700 font-semibold mb-3 flex items-center space-x-2">
                             <i class="fas fa-globe-asia text-green-600"></i>
                             <span>Nama Website</span>
                         </label>
                         <input type="text" name="website_name" id="website_name" class="w-full border-2 border-green-200 p-4 rounded-xl focus:outline-none focus:border-green-500 transition duration-200 bg-white/70 hover:bg-white" value="{{ old('website_name', $settings['website_name'] ?? '') }}" required>
-                    </div> -->
+                    </div>
 
                     <!-- Phone -->
                     <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
