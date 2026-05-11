@@ -505,7 +505,7 @@
                     <div class="icon-container">
                         <i class="fas fa-sitemap"></i>
                     </div>
-                    <h2 class="card-title">Struktur Organisasi</h2>
+                    <h2 class="card-title">Struktur BKPSDM</h2>
                     <p class="card-content">{{ $settings['org_structure_text'] ?? 'Penjelasan struktur tidak ditemukan.' }}</p>
                     <div class="w-full">
                         @if(isset($settings['org_structure_image']))

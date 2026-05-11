@@ -259,7 +259,7 @@
                     <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
                         <label for="profile_bkpsdm" class="block text-gray-700 font-semibold mb-3 flex items-center space-x-2">
                             <i class="fas fa-info-circle text-orange-600"></i>
-                            <span>Profil Organisasi</span>
+                            <span>Profil BKPSDM</span>
                         </label>
                         <textarea name="profile_bkpsdm" id="profile_bkpsdm" rows="5" class="w-full border-2 border-orange-200 p-4 rounded-xl focus:outline-none focus:border-orange-500 transition duration-200 bg-white/70 hover:bg-white resize-none" required>{{ old('profile_bkpsdm', $settings['profile_bkpsdm'] ?? '') }}</textarea>
                     </div>
@@ -293,7 +293,7 @@
                     <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
                         <label for="org_structure_text" class="block text-gray-700 font-semibold mb-3 flex items-center space-x-2">
                             <i class="fas fa-sitemap text-orange-600"></i>
-                            <span>Penjelasan Struktur Organisasi</span>
+                            <span>Penjelasan Struktur BKPSDM</span>
                         </label>
                         <textarea name="org_structure_text" id="org_structure_text" rows="5" class="w-full border-2 border-orange-200 p-4 rounded-xl focus:outline-none focus:border-orange-500 transition duration-200 bg-white/70 hover:bg-white resize-none" required>{{ old('org_structure_text', $settings['org_structure_text'] ?? '') }}</textarea>
                     </div>
@@ -303,7 +303,7 @@
                 <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 mt-6 border border-orange-200">
                     <label for="org_structure_image" class="block text-gray-700 font-semibold mb-4 flex items-center space-x-2">
                         <i class="fas fa-project-diagram text-orange-600"></i>
-                        <span>Gambar Struktur Organisasi</span>
+                        <span>Gambar Struktur BKPSDM</span>
                     </label>
                     
                     @if(isset($settings['org_structure_image']))
@@ -322,7 +322,7 @@
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                             <div class="text-center">
                                 <i class="fas fa-sitemap text-3xl text-orange-400 mb-2"></i>
-                                <p class="text-orange-600 font-medium">Upload bagan organisasi</p>
+                                <p class="text-orange-600 font-medium">Upload bagan BKPSDM</p>
                             </div>
                         </div>
                     </div>
